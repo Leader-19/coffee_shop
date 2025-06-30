@@ -1,5 +1,4 @@
 <template>
-  <h1>Product Page</h1>
   <!-- You can optionally list them here too -->
    <div v-for="product in products" :key="product.id">
     {{ product.name }}
