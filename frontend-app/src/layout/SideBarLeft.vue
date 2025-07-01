@@ -2,7 +2,8 @@
   <div class="w-20 bg-white shadow-lg flex flex-col items-center py-8 border-r border-gray-100">
     <!-- Logo -->
     <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center mb-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group">
-      <i class="fas fa-bread-slice text-white text-lg group-hover:scale-110 transition-transform duration-300"></i>
+      <!-- <i class="fas fa-bread-slice text-white text-lg group-hover:scale-110 transition-transform duration-300"></i> -->
+       <i class="fas fa-coffee text-white text-lg group-hover:scale-110 transition-transform duration-300"></i>
     </div>
 
     <!-- Main Navigation -->
