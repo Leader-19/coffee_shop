@@ -6,23 +6,13 @@
     <div v-else-if="products.data.length === 0" class="text-center py-10">
       <p class="text-gray-600">No products available.</p>
     </div>
-    <div
-      v-else
-      v-for="product in products.data"
-      :key="product.id"
-      class="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm hover:shadow-xl transition-shadow duration-300"
-    >
+    <div v-else v-for="product in products.data" :key="product.id"
+      class="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm hover:shadow-xl transition-shadow duration-300">
       <!-- Product Image -->
       <div class="relative">
-        <img
-          src=""
-          alt="Product Image"
-          class="w-full h-64 object-cover"
-        />
-        <div
-          v-if="product.discount"
-          class="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold"
-        >
+        <img :src="getImageUrl(product.image)" alt="Product Image" class="w-full h-64 object-cover" />
+        <div v-if="product.discount"
+          class="absolute top-4 right-4 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
           -{{ product.discount }}%
         </div>
       </div>
@@ -37,10 +27,7 @@
           <span class="text-2xl font-bold text-gray-900">
             ${{ (product.price * (1 - (product.discount || 0) / 100)).toFixed(2) }}
           </span>
-          <span
-            v-if="product.discount"
-            class="text-lg text-gray-500 line-through ml-2"
-          >
+          <span v-if="product.discount" class="text-lg text-gray-500 line-through ml-2">
             ${{ product.price.toFixed(2) }}
           </span>
         </div>
@@ -49,22 +36,16 @@
         <div class="flex items-center justify-between mb-6">
           <span class="text-gray-700 font-medium">Quantity:</span>
           <div class="flex items-center border border-gray-300 rounded-lg">
-            <button
-              @click="decreaseQuantity(product.id)"
+            <button @click="decreaseQuantity(product.id)"
               class="px-3 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200 rounded-l-lg"
-              :disabled="quantities[product.id] <= 1"
-            >
+              :disabled="quantities[product.id] <= 1">
               -
             </button>
-            <span
-              class="px-4 py-2 text-gray-800 font-semibold border-l border-r border-gray-300"
-            >
+            <span class="px-4 py-2 text-gray-800 font-semibold border-l border-r border-gray-300">
               {{ quantities[product.id] }}
             </span>
-            <button
-              @click="increaseQuantity(product.id)"
-              class="px-3 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200 rounded-r-lg"
-            >
+            <button @click="increaseQuantity(product.id)"
+              class="px-3 py-2 text-gray-600 hover:bg-gray-100 transition-colors duration-200 rounded-r-lg">
               +
             </button>
           </div>
@@ -85,11 +66,9 @@
         </div>
 
         <!-- Add to Order Button -->
-        <button
-          @click="addToOrder(product)"
+        <button @click="addToOrder(product)"
           class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
-          :disabled="loading"
-        >
+          :disabled="loading">
           Add to Order
         </button>
       </div>
@@ -111,6 +90,8 @@ const fetchData = async () => {
     const response = await axios.get(`${apiUrl}/products`);
     products.value = response.data;
 
+    console.log(products)
+
     // Initialize quantities for each product
     products.value.data.forEach((product) => {
       quantities.value[product.id] = quantities.value[product.id] || 1;
@@ -122,6 +103,12 @@ const fetchData = async () => {
     loading.value = false;
   }
 };
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return 'https://via.placeholder.com/256x256';
+  return `http://127.0.0.1:8000/storage/${imagePath}`;
+};
+
 
 const increaseQuantity = (productId) => {
   quantities.value[productId] = (quantities.value[productId] || 1) + 1;
