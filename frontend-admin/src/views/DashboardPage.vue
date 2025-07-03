@@ -77,7 +77,7 @@
   
     <!-- Enhanced Table -->
 
-    <table-of-user />
+    <!-- <table-of-user /> -->
     
   </div>
 </template>
