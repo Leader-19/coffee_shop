@@ -1,10 +1,194 @@
-
-<template>
-    <FormCreateProduct />
-    
-</template>
 <script setup>
-    import FormCreateProduct from '@/components/FormCreateProduct.vue';
+import axios from 'axios';
+import {
+  Package as PackageIcon,
+  User as UserIcon,
+  CheckCircle as CheckCircleIcon,
+  AlertTriangle as AlertTriangleIcon,
+  DollarSign as DollarSignIcon,
+  Filter as FilterIcon,
+  Download as DownloadIcon,
+  Plus as PlusIcon,
+  Search as SearchIcon,
+  Eye as EyeIcon,
+  Edit as EditIcon,
+  Trash as TrashIcon,
+  Image as ImageIcon,
+} from 'lucide-vue-next';
+
+import { onMounted, ref } from 'vue';
+
+const products = ref([]);
+
+const getProduct = () => {
+  axios.get('http://127.0.0.1:8000/api/products')
+    .then(response => {
+      products.value = response.data.data;
+      console.log(products.value); 
+    })
+    .catch(error => console.error(error));
+};
+
+
+onMounted(() => {
+  getProduct();
+});
 </script>
 
-<style scoped></style>
+<template>
+  <div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div class="flex items-center">
+            <PackageIcon class="h-8 w-8 text-blue-600" />
+            <div class="ml-4">
+              <h1 class="text-2xl font-bold text-gray-900">Product Management</h1>
+              <p class="text-sm text-gray-500">Admin Dashboard</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-500">Welcome, Admin</span>
+            <div class="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
+              <UserIcon class="h-5 w-5 text-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+          <PackageIcon class="h-6 w-6 text-blue-600" />
+          <div class="ml-5">
+            <p class="text-sm text-gray-500">Total Products</p>
+            <p class="text-lg font-medium text-gray-900">{{ products.length }}</p>
+          </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+          <CheckCircleIcon class="h-6 w-6 text-green-600" />
+          <div class="ml-5">
+            <p class="text-sm text-gray-500">Active Products</p>
+            <p class="text-lg font-medium text-gray-900">
+            </p>
+          </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+          <AlertTriangleIcon class="h-6 w-6 text-yellow-600" />
+          <div class="ml-5">
+            <p class="text-sm text-gray-500">Low Stock</p>
+            <p class="text-lg font-medium text-gray-900">
+            
+            </p>
+          </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+          <DollarSignIcon class="h-6 w-6 text-purple-600" />
+          <div class="ml-5">
+            <p class="text-sm text-gray-500">Total Value</p>
+            <p class="text-lg font-medium text-gray-900">
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="bg-white shadow rounded-lg mb-6">
+        <div class="px-6 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-lg font-medium text-gray-900">Products Inventory</h2>
+            <p class="text-sm text-gray-500">Manage all your products from here</p>
+          </div>
+          <div class="mt-4 sm:mt-0 flex space-x-3">
+            <button
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50"
+            >
+              <FilterIcon class="h-4 w-4 mr-2" /> Filter
+            </button>
+            <button
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50"
+            >
+              <DownloadIcon class="h-4 w-4 mr-2" /> Export
+            </button>
+            <router-link
+              to="/create_product"
+              class="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700"
+            >
+              <PlusIcon class="h-4 w-4 mr-2" /> Add Product
+            </router-link>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-b">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <SearchIcon class="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search products..."
+              class="block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50">
+              <td class="px-6 py-4">
+                <div class="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <img
+                    v-if="product.image"
+                    :src="product.image"
+                    alt="Product"
+                    class="h-12 w-12 object-cover"
+                  />
+                  <ImageIcon v-else class="h-6 w-6 text-gray-400" />
+                </div>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900">{{ product.name }}</td>
+              <td class="px-6 py-4 text-sm text-gray-500">{{ product.description }}</td>
+              <td class="px-6 py-4 text-sm text-gray-900">${{ product.price }}</td>
+              <!-- <td class="px-6 py-4">
+                <span
+                  class="text-xs rounded-full px-2 py-0.5"
+                  :class="product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                >
+                  {{ product.status }}
+                </span>
+              </td> -->
+              <td class="px-6 py-4">
+                <div class="flex space-x-2">
+                  <button class="text-blue-600 hover:text-blue-900">
+                    <EyeIcon class="h-4 w-4" />
+                  </button>
+                  <button class="text-green-600 hover:text-green-900">
+                    <EditIcon class="h-4 w-4" />
+                  </button>
+                  <button class="text-red-600 hover:text-red-900">
+                    <TrashIcon class="h-4 w-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</template>

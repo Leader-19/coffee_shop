@@ -1,219 +1,171 @@
 <template>
-  <div>
-    <h3 class="text-3xl font-medium text-gray-700">Dashboard</h3>
+  <div class="p-6 bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+      <p class="text-gray-600 mt-2">Welcome back! Here's what's happening with your business today.</p>
+    </div>
 
-    <div class="mt-4">
-      <div class="flex flex-wrap -mx-6">
-        <div class="w-full px-6 sm:w-1/2 xl:w-1/3">
-          <div
-            class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm"
-          >
-            <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
-              <svg
-                class="w-8 h-8 text-white"
-                viewBox="0 0 28 30"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M18.2 9.08889C18.2 11.5373 16.3196 13.5222 14 13.5222C11.6804 13.5222 9.79999 11.5373 9.79999 9.08889C9.79999 6.64043 11.6804 4.65556 14 4.65556C16.3196 4.65556 18.2 6.64043 18.2 9.08889Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M25.2 12.0444C25.2 13.6768 23.9464 15 22.4 15C20.8536 15 19.6 13.6768 19.6 12.0444C19.6 10.4121 20.8536 9.08889 22.4 9.08889C23.9464 9.08889 25.2 10.4121 25.2 12.0444Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M19.6 22.3889C19.6 19.1243 17.0927 16.4778 14 16.4778C10.9072 16.4778 8.39999 19.1243 8.39999 22.3889V26.8222H19.6V22.3889Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M8.39999 12.0444C8.39999 13.6768 7.14639 15 5.59999 15C4.05359 15 2.79999 13.6768 2.79999 12.0444C2.79999 10.4121 4.05359 9.08889 5.59999 9.08889C7.14639 9.08889 8.39999 10.4121 8.39999 12.0444Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M22.4 26.8222V22.3889C22.4 20.8312 22.0195 19.3671 21.351 18.0949C21.6863 18.0039 22.0378 17.9556 22.4 17.9556C24.7197 17.9556 26.6 19.9404 26.6 22.3889V26.8222H22.4Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M6.64896 18.0949C5.98058 19.3671 5.59999 20.8312 5.59999 22.3889V26.8222H1.39999V22.3889C1.39999 19.9404 3.2804 17.9556 5.59999 17.9556C5.96219 17.9556 6.31367 18.0039 6.64896 18.0949Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">8,282</h4>
-              <div class="text-gray-500">New Users</div>
-            </div>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="p-3 bg-indigo-500 rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-2xl font-bold text-gray-700">{{ stats.newUsers.toLocaleString() }}</h3>
+            <p class="text-gray-500">New Users</p>
+            <span class="text-green-500 text-sm">+12% from last month</span>
           </div>
         </div>
+      </div>
 
-        <div class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/3 sm:mt-0">
-          <div
-            class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm"
-          >
-            <div class="p-3 bg-blue-600 bg-opacity-75 rounded-full">
-              <svg
-                class="w-8 h-8 text-white"
-                viewBox="0 0 28 28"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4.19999 1.4C3.4268 1.4 2.79999 2.02681 2.79999 2.8C2.79999 3.57319 3.4268 4.2 4.19999 4.2H5.9069L6.33468 5.91114C6.33917 5.93092 6.34409 5.95055 6.34941 5.97001L8.24953 13.5705L6.99992 14.8201C5.23602 16.584 6.48528 19.6 8.97981 19.6H21C21.7731 19.6 22.4 18.9732 22.4 18.2C22.4 17.4268 21.7731 16.8 21 16.8H8.97983L10.3798 15.4H19.6C20.1303 15.4 20.615 15.1004 20.8521 14.6261L25.0521 6.22609C25.2691 5.79212 25.246 5.27673 24.991 4.86398C24.7357 4.45123 24.2852 4.2 23.8 4.2H8.79308L8.35818 2.46044C8.20238 1.83722 7.64241 1.4 6.99999 1.4H4.19999Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M22.4 23.1C22.4 24.2598 21.4598 25.2 20.3 25.2C19.1403 25.2 18.2 24.2598 18.2 23.1C18.2 21.9402 19.1403 21 20.3 21C21.4598 21 22.4 21.9402 22.4 23.1Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M9.1 25.2C10.2598 25.2 11.2 24.2598 11.2 23.1C11.2 21.9402 10.2598 21 9.1 21C7.9402 21 7 21.9402 7 23.1C7 24.2598 7.9402 25.2 9.1 25.2Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">200,521</h4>
-              <div class="text-gray-500">Total Orders</div>
-            </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="p-3 bg-blue-500 rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-2xl font-bold text-gray-700">{{ stats.totalOrders.toLocaleString() }}</h3>
+            <p class="text-gray-500">Total Orders</p>
+            <span class="text-green-500 text-sm">+8% from last month</span>
           </div>
         </div>
+      </div>
 
-        <div class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/3 xl:mt-0">
-          <div
-            class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm"
-          >
-            <div class="p-3 bg-pink-600 bg-opacity-75 rounded-full">
-              <svg
-                class="w-8 h-8 text-white"
-                viewBox="0 0 28 28"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6.99998 11.2H21L22.4 23.8H5.59998L6.99998 11.2Z"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M9.79999 8.4C9.79999 6.08041 11.6804 4.2 14 4.2C16.3196 4.2 18.2 6.08041 18.2 8.4V12.6C18.2 14.9197 16.3196 16.8 14 16.8C11.6804 16.8 9.79999 14.9197 9.79999 12.6V8.4Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="p-3 bg-pink-500 rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-2xl font-bold text-gray-700">{{ stats.availableProducts.toLocaleString() }}</h3>
+            <p class="text-gray-500">Available Products</p>
+            <span class="text-red-500 text-sm">-2% from last month</span>
+          </div>
+        </div>
+      </div>
 
-            <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">215,542</h4>
-              <div class="text-gray-500">Available Products</div>
-            </div>
+      <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center">
+          <div class="p-3 bg-green-500 rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"/>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-2xl font-bold text-gray-700">${{ stats.revenue.toLocaleString() }}</h3>
+            <p class="text-gray-500">Total Revenue</p>
+            <span class="text-green-500 text-sm">+15% from last month</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="mt-8"></div>
+    <!-- import Chart -->
+    <ChartOfSystem />
+    <!-- end import -->
 
-    <div class="flex flex-col mt-8">
-      <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div
-          class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg"
-        >
-          <table class="min-w-full">
-            <thead>
-              <tr>
-                <th
-                  class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                >
-                  Name
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                >
-                  Title
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                >
-                  Status
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50"
-                >
-                  Role
-                </th>
-                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
-              </tr>
-            </thead>
+  
+    <!-- Enhanced Table -->
 
-            <tbody class="bg-white">
-              <tr>
-                <td
-                  class="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
-                >
-                  <div class="flex items-center">
-                    <div class="flex-shrink-0 w-10 h-10">
-                      <img
-                        class="w-10 h-10 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
-                    </div>
-
-                    <div class="ml-4">
-                      <div class="text-sm font-medium leading-5 text-gray-900">
-                     
-                      </div>
-                      <div class="text-sm leading-5 text-gray-500">
-                 
-                      </div>
-                    </div>
-                  </div>
-                </td>
-
-                <td
-                  class="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
-                >
-                  <div class="text-sm leading-5 text-gray-900">
-                 
-                  </div>
-                  <div class="text-sm leading-5 text-gray-500">
-                
-                  </div>
-                </td>
-
-                <td
-                  class="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
-                >
-                  <span
-                    class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full"
-                    ></span
-                  >
-                </td>
-
-                <td
-                  class="px-6 py-4 text-sm leading-5 text-gray-500 border-b border-gray-200 whitespace-nowrap"
-                >
+    <table-of-user />
     
-                </td>
-
-                <td
-                  class="px-6 py-4 text-sm font-medium leading-5 text-right border-b border-gray-200 whitespace-nowrap"
-                >
-                  <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                    >Edit</a
-                  >
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import ChartOfSystem from '@/components/ChartOfSystem.vue'
+import TableOfUser from '@/components/TableOfUser.vue'
+// Stats Data
+const stats = ref({
+  newUsers: 8282,
+  totalOrders: 200521,
+  availableProducts: 215542,
+  revenue: 1250000
+})
+
+// Recent Activities
+const recentActivities = ref([
+  { id: 1, description: 'New user registered', time: '2 minutes ago' },
+  { id: 2, description: 'Order #1234 completed', time: '5 minutes ago' },
+  { id: 3, description: 'Product "iPhone 15" added', time: '10 minutes ago' },
+  { id: 4, description: 'Payment received from John Doe', time: '15 minutes ago' },
+  { id: 5, description: 'New review posted', time: '20 minutes ago' }
+])
+
+// Top Products
+const topProducts = ref([
+  { id: 1, name: 'iPhone 15 Pro', revenue: '1,249k', percentage: 85 },
+  { id: 2, name: 'MacBook Air M2', revenue: '1,068k', percentage: 72 },
+  { id: 3, name: 'AirPods Pro', revenue: '525k', percentage: 45 },
+  { id: 4, name: 'iPad Air', revenue: '390k', percentage: 33 }
+])
+
+// Users List
+const users = ref([
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    status: 'Active',
+    role: 'Admin',
+    joined: '2024-01-15',
+    avatar:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    status: 'Active',
+    role: 'User',
+    joined: '2024-01-20',
+    avatar:
+      'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+  },
+  {
+    id: 3,
+    name: 'Mike Johnson',
+    email: 'mike@example.com',
+    status: 'Inactive',
+    role: 'User',
+    joined: '2024-01-10',
+    avatar:
+      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+  },
+  {
+    id: 4,
+    name: 'Sarah Wilson',
+    email: 'sarah@example.com',
+    status: 'Active',
+    role: 'Moderator',
+    joined: '2024-01-28',
+    avatar:
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+  }
+])
+
+// Method to return class based on status
+const getStatusClass = (status) => {
+  return status === 'Active'
+    ? 'bg-green-100 text-green-800'
+    : 'bg-red-100 text-red-800'
+}
+</script>
+
+<style scoped>
+/* Custom styles for static graphs */
+.chart-bar {
+  transition: all 0.3s ease;
+}
+</style>

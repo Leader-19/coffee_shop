@@ -9,7 +9,7 @@
     <main class="flex-1 p-8 ml-64">
       <!-- Header -->
       <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Inventory Management</h1>
+        <h1 class="text-3xl font-bold text-gray-800">Coffee Shop</h1>
         <input
           type="text"
           placeholder="Search..."
@@ -17,15 +17,12 @@
         />
       </div>
 
-      <!-- Pages -->
-      <DashboardPage />
-      <ProductPage />
+      <RouterView />
+
     </main>
   </div>
 </template>
 
 <script setup>
-import ProductPage from './views/ProductPage.vue';
-import DashboardPage from './views/DashboardPage.vue';
 import NavbarPage from './layout/NavbarPage.vue';
 </script>
