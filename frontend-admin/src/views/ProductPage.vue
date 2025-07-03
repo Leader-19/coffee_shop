@@ -29,6 +29,10 @@ const getProduct = () => {
     .catch(error => console.error(error));
 };
 
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return 'https://via.placeholder.com/256x256';
+  return `http://127.0.0.1:8000/storage/${imagePath}`;
+};
 
 onMounted(() => {
   getProduct();
@@ -154,7 +158,7 @@ onMounted(() => {
                 <div class="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden">
                   <img
                     v-if="product.image"
-                    :src="product.image"
+                    :src="getImageUrl(product.image)"
                     alt="Product"
                     class="h-12 w-12 object-cover"
                   />
