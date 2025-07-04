@@ -1,79 +1,54 @@
 <template>
-  <div class="flex min-h-screen bg-gray-100 font-sans">
+  <div class="flex bg-gray-100 font-sans min-h-screen">
     <!-- Left Sidebar -->
-    <SideBarLeft :products="products" @add-to-cart="addToCart" />
+    <SideBarLeft class="hidden lg:flex" />
+
+    <!-- Right Sidebar -->
+    <SideBarRight class="hidden lg:flex" />
 
     <!-- Main Content -->
-    <div class="flex-0.1 ml-13 p-6">
-      <!-- Header -->
-      <div class="flex items-center ml-12 justify-between mb-8">
+    <main class="flex-1 p-6 lg:ml-20 lg:mr-80">
+      <!-- HEADER -->
+      <div class="flex flex-col lg:flex-row justify-between items-center mb-8">
         <div>
           <h1 class="text-2xl font-bold text-gray-800">Welcome, Coffee</h1>
           <p class="text-gray-500 text-sm">Discover whatever you need easily</p>
         </div>
-        <div class="flex items-center space-x-4">
-          <div class="relative">
+        <div class="flex items-center gap-2 mt-4 lg:mt-0 w-full lg:w-auto">
+          <div class="relative w-full lg:w-80">
             <input
               type="text"
               placeholder="Search product..."
-              class="w-80 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-custom focus:border-transparent"
+              class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <i
               class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             ></i>
           </div>
-          <button class="p-2 border border-gray-200 rounded-lg hover:bg-gray-50">
+          <button class="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 hidden lg:block">
             <i class="fas fa-filter text-gray-400"></i>
           </button>
         </div>
       </div>
 
-      <!-- Category Navigation -->
-      <div class="flex space-x-6 mb-8 ml-12">
-        <button class="text-gray-600 hover:text-orange-custom font-semibold">All</button>
-        <button class="text-gray-600 hover:text-orange-custom font-semibold">Coffee</button>
-        <button class="text-gray-600 hover:text-orange-custom font-semibold">Desserts</button>
-        <button class="text-gray-600 hover:text-orange-custom font-semibold">Snacks</button>
+      <!-- CATEGORY NAV -->
+      <div class="flex flex-wrap gap-4 mb-8">
+        <button class="text-gray-600 hover:text-orange-500 font-semibold">All</button>
+        <button class="text-gray-600 hover:text-orange-500 font-semibold">Coffee</button>
+        <button class="text-gray-600 hover:text-orange-500 font-semibold">Desserts</button>
+        <button class="text-gray-600 hover:text-orange-500 font-semibold">Snacks</button>
       </div>
 
-      <!-- Product Section -->
+      <!-- PRODUCTS -->
+       <HomePage />
       <ProductPage />
-    </div>
-
-    <!-- Right Sidebar -->
-    <SideBarRight :cart-items="cartItems" />
+    </main>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import SideBarLeft from './layout/SideBarLeft.vue';
 import SideBarRight from './layout/SideBarRight.vue';
-import ProductPage from './views/ProductPage.vue';
-
-const products = ref([
-  { name: 'appuccino', price: 4.99, image: 'https://via.placeholder.com/50', category: 'Coffee' },
-  { name: 'Iced Caramel Latte', price: 5.25, image: 'https://via.placeholder.com/50', category: 'Coffee' },
-  // Add more products as needed
-]);
-
-const cartItems = ref([]);
-
-const addToCart = (product) => {
-  const existingItem = cartItems.value.find(item => item.name === product.name);
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cartItems.value.push({ ...product, quantity: 1 });
-  }
-};
+import HomePage from './views/HomePage.vue';
+import ProductPage from './views/ProductPage.vue'
 </script>
-
-<style scoped>
-@media (max-width: 768px) {
-  .flex-1 {
-    margin-left: 0;
-    margin-right: 0;
-  }
-}
-</style>

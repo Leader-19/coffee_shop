@@ -201,7 +201,7 @@
     </div>
   </div>
   <!-- Recent Activities -->
-  <div class="bg-white rounded-lg shadow-sm p-6">
+  <div class="bg-white rounded-lg shadow-sm p-6 mb-5">
     <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activities</h3>
     <div class="space-y-4">
       <div

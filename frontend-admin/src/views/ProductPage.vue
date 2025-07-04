@@ -1,4 +1,6 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import {
   Package as PackageIcon,
@@ -16,22 +18,39 @@ import {
   Image as ImageIcon,
 } from 'lucide-vue-next';
 
-import { onMounted, ref } from 'vue';
-
 const products = ref([]);
+const router = useRouter();
 
 const getProduct = () => {
-  axios.get('http://127.0.0.1:8000/api/products')
-    .then(response => {
+  axios
+    .get('http://127.0.0.1:8000/api/products')
+    .then((response) => {
       products.value = response.data.data;
-      console.log(products.value); 
+      console.log(products.value);
     })
-    .catch(error => console.error(error));
+    .catch((error) => console.error(error));
 };
 
 const getImageUrl = (imagePath) => {
   if (!imagePath) return 'https://via.placeholder.com/256x256';
   return `http://127.0.0.1:8000/storage/${imagePath}`;
+};
+
+const editProduct = (id) => {
+  router.push(`/edit_product/${id}`);
+};
+
+const deleteProduct = async (id) => {
+  const confirmed = window.confirm('Are you sure you want to delete this product?');
+  if (!confirmed) return;
+
+  try {
+    await axios.delete(`http://127.0.0.1:8000/api/products/${id}`);
+    getProduct();
+  } catch (error) {
+    console.error(error);
+    alert('Failed to delete product.');
+  }
 };
 
 onMounted(() => {
@@ -66,35 +85,37 @@ onMounted(() => {
     <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+        <div class="bg-white shadow rounded-lg p-5 flex items-center">
           <PackageIcon class="h-6 w-6 text-blue-600" />
           <div class="ml-5">
             <p class="text-sm text-gray-500">Total Products</p>
             <p class="text-lg font-medium text-gray-900">{{ products.length }}</p>
           </div>
         </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+        <div class="bg-white shadow rounded-lg p-5 flex items-center">
           <CheckCircleIcon class="h-6 w-6 text-green-600" />
           <div class="ml-5">
             <p class="text-sm text-gray-500">Active Products</p>
             <p class="text-lg font-medium text-gray-900">
+              {{ products.filter(p => p.status === 'active').length }}
             </p>
           </div>
         </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+        <div class="bg-white shadow rounded-lg p-5 flex items-center">
           <AlertTriangleIcon class="h-6 w-6 text-yellow-600" />
           <div class="ml-5">
             <p class="text-sm text-gray-500">Low Stock</p>
             <p class="text-lg font-medium text-gray-900">
-            
+              {{ products.filter(p => p.stock <= 5).length }}
             </p>
           </div>
         </div>
-        <div class="bg-white overflow-hidden shadow rounded-lg p-5 flex items-center">
+        <div class="bg-white shadow rounded-lg p-5 flex items-center">
           <DollarSignIcon class="h-6 w-6 text-purple-600" />
           <div class="ml-5">
             <p class="text-sm text-gray-500">Total Value</p>
             <p class="text-lg font-medium text-gray-900">
+              ${{ products.reduce((sum, p) => sum + Number(p.price || 0), 0).toLocaleString() }}
             </p>
           </div>
         </div>
@@ -167,24 +188,25 @@ onMounted(() => {
               </td>
               <td class="px-6 py-4 text-sm text-gray-900">{{ product.name }}</td>
               <td class="px-6 py-4 text-sm text-gray-500">{{ product.description }}</td>
-              <td class="px-6 py-4 text-sm text-gray-900">${{ product.price }}</td>
-              <!-- <td class="px-6 py-4">
-                <span
-                  class="text-xs rounded-full px-2 py-0.5"
-                  :class="product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
-                >
-                  {{ product.status }}
-                </span>
-              </td> -->
+              <td class="px-6 py-4 text-sm text-gray-900">${{ Number(product.price).toLocaleString() }}</td>
               <td class="px-6 py-4">
                 <div class="flex space-x-2">
-                  <button class="text-blue-600 hover:text-blue-900">
+                  <button
+                    class="text-blue-600 hover:text-blue-900"
+                    @click="editProduct(product.id)"
+                  >
                     <EyeIcon class="h-4 w-4" />
                   </button>
-                  <button class="text-green-600 hover:text-green-900">
+                  <button
+                    class="text-green-600 hover:text-green-900"
+                    @click="editProduct(product.id)"
+                  >
                     <EditIcon class="h-4 w-4" />
                   </button>
-                  <button class="text-red-600 hover:text-red-900">
+                  <button
+                    class="text-red-600 hover:text-red-900"
+                    @click="deleteProduct(product.id)"
+                  >
                     <TrashIcon class="h-4 w-4" />
                   </button>
                 </div>
