@@ -1,63 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import {
-  Package as PackageIcon,
-  User as UserIcon,
-  CheckCircle as CheckCircleIcon,
-  AlertTriangle as AlertTriangleIcon,
-  DollarSign as DollarSignIcon,
-  Filter as FilterIcon,
-  Download as DownloadIcon,
-  Plus as PlusIcon,
-  Search as SearchIcon,
-  Eye as EyeIcon,
-  Edit as EditIcon,
-  Trash as TrashIcon,
-  Image as ImageIcon,
-} from 'lucide-vue-next';
-
-const products = ref([]);
-const router = useRouter();
-
-const getProduct = () => {
-  axios
-    .get('http://127.0.0.1:8000/api/products')
-    .then((response) => {
-      products.value = response.data.data;
-      console.log(products.value);
-    })
-    .catch((error) => console.error(error));
-};
-
-const getImageUrl = (imagePath) => {
-  if (!imagePath) return 'https://via.placeholder.com/256x256';
-  return `http://127.0.0.1:8000/storage/${imagePath}`;
-};
-
-const editProduct = (id) => {
-  router.push(`/edit_product/${id}`);
-};
-
-const deleteProduct = async (id) => {
-  const confirmed = window.confirm('Are you sure you want to delete this product?');
-  if (!confirmed) return;
-
-  try {
-    await axios.delete(`http://127.0.0.1:8000/api/products/${id}`);
-    getProduct();
-  } catch (error) {
-    console.error(error);
-    alert('Failed to delete product.');
-  }
-};
-
-onMounted(() => {
-  getProduct();
-});
-</script>
-
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Header -->
@@ -81,9 +21,9 @@ onMounted(() => {
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <!-- Stats Cards -->
+      <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white shadow rounded-lg p-5 flex items-center">
           <PackageIcon class="h-6 w-6 text-blue-600" />
@@ -129,16 +69,6 @@ onMounted(() => {
             <p class="text-sm text-gray-500">Manage all your products from here</p>
           </div>
           <div class="mt-4 sm:mt-0 flex space-x-3">
-            <button
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50"
-            >
-              <FilterIcon class="h-4 w-4 mr-2" /> Filter
-            </button>
-            <button
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50"
-            >
-              <DownloadIcon class="h-4 w-4 mr-2" /> Export
-            </button>
             <router-link
               to="/create_product"
               class="inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm text-white bg-blue-600 hover:bg-blue-700"
@@ -147,21 +77,9 @@ onMounted(() => {
             </router-link>
           </div>
         </div>
-        <div class="px-6 py-4 border-b">
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <SearchIcon class="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search products..."
-              class="block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-        </div>
       </div>
 
-      <!-- Products Table -->
+      <!-- Product Table -->
       <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -192,12 +110,6 @@ onMounted(() => {
               <td class="px-6 py-4">
                 <div class="flex space-x-2">
                   <button
-                    class="text-blue-600 hover:text-blue-900"
-                    @click="editProduct(product.id)"
-                  >
-                    <EyeIcon class="h-4 w-4" />
-                  </button>
-                  <button
                     class="text-green-600 hover:text-green-900"
                     @click="editProduct(product.id)"
                   >
@@ -218,3 +130,59 @@ onMounted(() => {
     </main>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+import {
+  Package as PackageIcon,
+  User as UserIcon,
+  CheckCircle as CheckCircleIcon,
+  AlertTriangle as AlertTriangleIcon,
+  DollarSign as DollarSignIcon,
+  Plus as PlusIcon,
+  Edit as EditIcon,
+  Trash as TrashIcon,
+  Image as ImageIcon,
+} from 'lucide-vue-next';
+
+const products = ref([]);
+const router = useRouter();
+
+const getProduct = () => {
+  axios
+    .get('http://127.0.0.1:8000/api/products')
+    .then((response) => {
+      products.value = response.data.data;
+    })
+    .catch((error) => console.error(error));
+};
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return 'https://via.placeholder.com/256x256';
+  return `http://127.0.0.1:8000/storage/${imagePath}`;
+};
+
+const editProduct = (id) => {
+  router.push({ name: 'EditProduct', params: { id } });
+};
+
+const deleteProduct = async (id) => {
+  const confirmed = window.confirm('Are you sure you want to delete this product?');
+  if (!confirmed) return;
+
+  try {
+    await axios.delete(`http://127.0.0.1:8000/api/products/${id}`);
+    getProduct();
+  } catch (error) {
+    console.error(error);
+    alert('Failed to delete product.');
+  }
+};
+
+onMounted(() => {
+  getProduct();
+});
+</script>

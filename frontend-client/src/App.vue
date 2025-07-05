@@ -40,7 +40,7 @@
       </div>
 
       <!-- PRODUCTS -->
-       <HomePage />
+       <!-- <HomePage /> -->
       <ProductPage />
     </main>
   </div>

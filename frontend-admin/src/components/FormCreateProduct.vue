@@ -13,6 +13,7 @@
           placeholder="Input name of product"
           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+        <p v-if="nameError" class="text-red-600 text-sm mt-1">{{ nameError }}</p>
       </div>
 
       <!-- Description -->
@@ -25,6 +26,7 @@
           placeholder="Write description"
           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+        <p v-if="descriptionError" class="text-red-600 text-sm mt-1">{{ descriptionError }}</p>
       </div>
 
       <!-- Price -->
@@ -37,6 +39,7 @@
           placeholder="Enter price"
           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+        <p v-if="priceError" class="text-red-600 text-sm mt-1">{{ priceError }}</p>
       </div>
 
       <!-- Image Upload -->
@@ -78,6 +81,11 @@ const description = ref('')
 const price = ref('')
 const image = ref(null)
 
+// Validation error messages
+const nameError = ref('')
+const descriptionError = ref('')
+const priceError = ref('')
+
 // Feedback messages
 const message = ref('')
 const error = ref('')
@@ -87,16 +95,38 @@ const handleImage = (e) => {
   image.value = e.target.files[0]
 }
 
-// Submit form
+// Submit form with client-side validation
 const submitForm = async () => {
+  // Reset messages
   error.value = ''
   message.value = ''
+  nameError.value = ''
+  descriptionError.value = ''
+  priceError.value = ''
 
+  // Client-side validation
+  if (!name.value.trim()) {
+    nameError.value = 'Name is required'
+  }
+  if (!description.value.trim()) {
+    descriptionError.value = 'Description is required'
+  }
+  if (!price.value) {
+    priceError.value = 'Price is required'
+  }
+
+  if (nameError.value || descriptionError.value || priceError.value) {
+    return // stop submission if validation fails
+  }
+
+  // Prepare form data
   const formData = new FormData()
   formData.append('name', name.value)
   formData.append('description', description.value)
   formData.append('price', price.value)
-  formData.append('image', image.value)
+  if (image.value) {
+    formData.append('image', image.value)
+  }
 
   try {
     const res = await axios.post('http://127.0.0.1:8000/api/products', formData, {

@@ -63,32 +63,35 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
-        if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'price' => 'sometimes|numeric',
-            'image' => 'nullable|string'
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        $product->name = $validated['name'];
+        $product->description = $validated['description'] ?? null;
+        $product->price = $validated['price'];
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+            $product->image = $imagePath;
         }
 
-        $product->update($validator->validated());
+        $product->save();
 
         return response()->json([
-            'message' => 'Product updated successfully',
-            'product' => $product
-        ], 200);
+            'validated' => $validated,
+            'hasFile' => $request->hasFile('image'),
+            'file' => $request->file('image'),
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
