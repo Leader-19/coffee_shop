@@ -11,9 +11,10 @@
 
     <!-- Main Navigation -->
     <nav class="flex flex-col space-y-4 mb-auto">
-      <button
+      <router-link
         v-for="item in navItems"
         :key="item.name"
+        :to="item.path"
         :class="[
           'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 relative',
           item.active ? 'text-orange-500 bg-orange-50' : 'text-gray-400 hover:text-orange-500 hover:bg-orange-50'
@@ -29,9 +30,9 @@
               : `w-4 h-4 bg-${item.badge.color}-500 text-white text-xs`
           ]"
         >
-          <span v-if="item.badge.type === 'number'">{{ item.badge.value }}</span>
+         
         </div>
-      </button>
+      </router-link>
     </nav>
 
     <!-- Bottom Navigation -->
@@ -62,11 +63,11 @@
 import { ref } from 'vue';
 
 const navItems = ref([
-  { name: 'Home', icon: 'fas fa-home', active: false },
-  { name: 'Dashboard', icon: 'fas fa-th-large', active: true, badge: { type: 'dot', color: 'orange' } },
-  { name: 'Favorites', icon: 'fas fa-heart', active: false, badge: { type: 'number', value: 3, color: 'red' } },
-  { name: 'Orders', icon: 'fas fa-shopping-bag', active: false, badge: { type: 'number', value: 5, color: 'blue' } },
-  { name: 'Profile', icon: 'fas fa-user', active: false },
+  { name: 'Home', icon: 'fas fa-home', active: false, path: '/' },
+  { name: 'ProductPage', icon: 'fas fa-th-large', active: true, badge: { type: 'dot', color: 'orange' }, path: '/products' },
+  { name: 'Favorites', icon: 'fas fa-heart', active: false, badge: { type: 'number', value: 3, color: 'red' }, path: '/favorites' },
+  { name: 'Orders', icon: 'fas fa-shopping-bag', active: false, badge: { type: 'number', value: 5, color: 'blue' }, path: '/orders' },
+  { name: 'Profile', icon: 'fas fa-user', active: false, path: '/profile' },
 ]);
 
 const bottomNavItems = ref([

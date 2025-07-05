@@ -40,8 +40,7 @@
       </div>
 
       <!-- PRODUCTS -->
-       <!-- <HomePage /> -->
-      <ProductPage />
+      <router-view />
     </main>
   </div>
 </template>
@@ -49,6 +48,4 @@
 <script setup>
 import SideBarLeft from './layout/SideBarLeft.vue';
 import SideBarRight from './layout/SideBarRight.vue';
-import HomePage from './views/HomePage.vue';
-import ProductPage from './views/ProductPage.vue'
 </script>
