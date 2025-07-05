@@ -41,6 +41,7 @@
 
       <!-- PRODUCTS -->
       <router-view />
+      <FooterPage />
     </main>
   </div>
 </template>
@@ -48,4 +49,5 @@
 <script setup>
 import SideBarLeft from './layout/SideBarLeft.vue';
 import SideBarRight from './layout/SideBarRight.vue';
+import FooterPage from './layout/FooterPage.vue';
 </script>

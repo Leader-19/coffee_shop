@@ -8,22 +8,22 @@
         <i class="fas fa-ellipsis-h text-gray-400"></i>
       </button>
     </div>
-
-    <!-- Order Items -->
     <div class="space-y-4 overflow-y-auto flex-1">
       <div
-        v-for="orderItem in cartItems"
-        :key="orderItem.name"
+        v-for="orderItem in cartStore.cartItems"
+        :key="orderItem.id"
         class="flex items-center space-x-3"
       >
         <img
-          :src="orderItem.image"
-          :alt="orderItem.name"
+          :src="getImageUrl(orderItem.image)"
+          :alt="orderItem.name || 'Product'"
           class="w-12 h-12 object-cover rounded-lg"
         />
         <div class="flex-1">
-          <h4 class="font-medium text-gray-800 text-sm">{{ orderItem.name }}</h4>
-          <p class="text-orange-500 font-semibold text-sm">${{ orderItem.price }}</p>
+          <h4 class="font-medium text-gray-800 text-sm">{{ orderItem.name || 'Unnamed Product' }}</h4>
+          <p class="text-orange-500 font-semibold text-sm">
+            {{ isValidPrice(orderItem.price) ? `$ ${orderItem.price.toFixed(2)}` : 'Price N/A' }}
+          </p>
         </div>
         <div>
           <span
@@ -34,27 +34,25 @@
         </div>
       </div>
     </div>
-
-    <!-- Summary -->
     <div class="border-t pt-4 space-y-3 mt-4">
       <div class="flex justify-between text-sm">
         <span class="text-gray-600">Subtotal</span>
-        <span class="font-semibold">${{ subtotal }}</span>
+        <span class="font-semibold">${{ cartStore.subtotal() }}</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-600">Total sales tax</span>
-        <span class="font-semibold">${{ tax }}</span>
+        <span class="font-semibold">${{ cartStore.tax() }}</span>
       </div>
       <div class="border-t pt-3">
         <div class="flex justify-between">
           <span class="font-semibold text-gray-800">Total</span>
-          <span class="font-bold text-lg">${{ total }}</span>
+          <span class="font-bold text-lg">${{ cartStore.total() }}</span>
         </div>
       </div>
     </div>
-
     <button
       class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold mt-6 hover:bg-orange-600 transition-colors"
+      :disabled="cartStore.cartItems.length === 0"
     >
       Continue to Payment
     </button>
@@ -62,18 +60,20 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { useCartStore } from '@/stores/cart';
 
-const cartItems = ref([
-  { name: 'Iced Caramel Latte', price: 5.25, quantity: 3, image: 'https://via.placeholder.com/50' },
-  { name: 'Cappuccino', price: 4.99, quantity: 2, image: 'https://via.placeholder.com/50' },
-]);
+const cartStore = useCartStore();
 
-const subtotal = computed(() =>
-  cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)
-);
+const getImageUrl = (path) => {
+  if (!path) return 'https://via.placeholder.com/256x256';
+  return `http://127.0.0.1:8000/storage/${path}`;
+};
 
-const taxRate = 0.06;
-const tax = computed(() => (subtotal.value * taxRate).toFixed(2));
-const total = computed(() => (parseFloat(subtotal.value) + parseFloat(tax.value)).toFixed(2));
+const isValidPrice = (price) => {
+  return typeof price === 'number' && !isNaN(price) && price >= 0;
+};
 </script>
+
+<style scoped>
+/* No changes needed */
+</style>

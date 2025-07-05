@@ -1,30 +1,22 @@
 <template>
-  <div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
-    >
+  <div class="bg-gray-50 min-h-screen">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
       <div v-if="loading" class="col-span-full text-center py-12">
         <p class="text-gray-600">Loading products...</p>
       </div>
-
-      <div
-        v-else-if="products.data.length === 0"
-        class="col-span-full text-center py-12"
-      >
+      <div v-else-if="products.data.length === 0" class="col-span-full text-center py-12">
         <p class="text-gray-600">No products available.</p>
       </div>
-
       <div
         v-else
         v-for="product in products.data"
         :key="product.id"
         class="bg-white rounded-xl shadow hover:shadow-xl transition-shadow duration-300 flex flex-col"
       >
-        <!-- Product Image -->
         <div class="relative w-full aspect-square overflow-hidden rounded-t-xl">
           <img
             :src="getImageUrl(product.image)"
-            alt="Product Image"
+            :alt="product.name || 'Product'"
             class="w-full h-full object-cover"
           />
           <div
@@ -33,31 +25,32 @@
           >
             -{{ product.discount }}%
           </div>
+          <button
+            @click="toggleFavorite(product)"
+            class="absolute top-2 left-2 p-2 bg-white rounded-full hover:bg-gray-100"
+            :disabled="!isValidPrice(product.price)"
+          >
+            <i
+              :class="[
+                'fas fa-heart',
+                cartStore.favorites.some(item => item.id === product.id)
+                  ? 'text-red-500'
+                  : 'text-gray-400'
+              ]"
+            ></i>
+          </button>
         </div>
-
-        <!-- Product Details -->
         <div class="p-4 flex flex-col flex-1">
-          <h2 class="text-lg font-bold text-gray-800 mb-1">
-            {{ product.name }}
-          </h2>
-          <p class="text-gray-500 text-sm mb-2 line-clamp-2">
-            {{ product.description }}
-          </p>
-
-          <!-- Pricing -->
+          <h2 class="text-lg font-bold text-gray-800 mb-1">{{ product.name || 'Unnamed Product' }}</h2>
+          <p class="text-gray-500 text-sm mb-2 line-clamp-2">{{ product.description || 'No description' }}</p>
           <div class="flex items-center mb-2">
             <span class="text-xl font-bold text-gray-900">
-              ${{ discountedPrice(product).toFixed(2) }}
+              ${{ isValidPrice(product.price) ? discountedPrice(product).toFixed(2) : 'N/A' }}
             </span>
-            <span
-              v-if="product.discount"
-              class="text-gray-400 line-through ml-2 text-sm"
-            >
-              ${{ product.price.toFixed(2) }}
+            <span v-if="product.discount" class="text-gray-400 line-through ml-2 text-sm">
+              ${{ isValidPrice(product.price) ? parseFloat(product.price).toFixed(2) : 'N/A' }}
             </span>
           </div>
-
-          <!-- Quantity Controls -->
           <div class="flex justify-between items-center mb-2 mt-auto">
             <span class="text-gray-700 text-sm">Quantity:</span>
             <div class="flex items-center border rounded-lg overflow-hidden">
@@ -79,20 +72,14 @@
               </button>
             </div>
           </div>
-
-          <!-- Total -->
           <div class="flex justify-between text-gray-800 font-semibold mb-4">
             <span>Total:</span>
-            <span>
-              ${{ totalPrice(product).toFixed(2) }}
-            </span>
+            <span>${{ isValidPrice(product.price) ? totalPrice(product).toFixed(2) : 'N/A' }}</span>
           </div>
-
-          <!-- Add to Order -->
           <button
             @click="addToOrder(product)"
             class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            :disabled="loading"
+            :disabled="loading || !isValidPrice(product.price)"
           >
             Add to Order
           </button>
@@ -103,25 +90,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted } from 'vue';
+import { useCartStore } from '@/stores/cart';
+import axios from 'axios';
 
+const cartStore = useCartStore();
 const products = ref({ data: [] });
 const loading = ref(true);
 const quantities = ref({});
 
 const fetchData = async () => {
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
     const response = await axios.get(`${apiUrl}/products`);
-    products.value = response.data;
-
-    // initialize quantities
+    products.value = {
+      data: response.data.data.map(product => ({
+        ...product,
+        price: parseFloat(product.price) || 0,
+        name: product.name || 'Unnamed Product',
+        description: product.description || 'No description',
+      })),
+    };
     products.value.data.forEach((p) => {
       quantities.value[p.id] = 1;
     });
   } catch (e) {
-    console.error("Error fetching products:", e);
+    console.error('Error fetching products:', e);
     products.value.data = [];
   } finally {
     loading.value = false;
@@ -129,15 +123,21 @@ const fetchData = async () => {
 };
 
 const getImageUrl = (path) => {
-  if (!path) return "https://via.placeholder.com/256x256";
+  if (!path) return 'https://via.placeholder.com/256x256';
   return `http://127.0.0.1:8000/storage/${path}`;
 };
 
+const isValidPrice = (price) => {
+  return typeof price === 'number' && !isNaN(price) && price >= 0;
+};
+
 const discountedPrice = (product) => {
+  if (!isValidPrice(product.price)) return 0;
   return product.price * (1 - (product.discount || 0) / 100);
 };
 
 const totalPrice = (product) => {
+  if (!isValidPrice(product.price)) return 0;
   return discountedPrice(product) * quantities.value[product.id];
 };
 
@@ -149,10 +149,9 @@ const decreaseQuantity = (id) => {
   if (quantities.value[id] > 1) quantities.value[id] -= 1;
 };
 
-const emit = defineEmits(["add-to-cart"]);
-
 const addToOrder = (product) => {
-  emit("add-to-cart", {
+  if (!isValidPrice(product.price)) return;
+  cartStore.addToCart({
     id: product.id,
     name: product.name,
     price: discountedPrice(product),
@@ -161,11 +160,25 @@ const addToOrder = (product) => {
   });
 };
 
+const toggleFavorite = (product) => {
+  if (!isValidPrice(product.price)) return;
+  if (cartStore.favorites.some(item => item.id === product.id)) {
+    cartStore.removeFromFavorites(product.id);
+  } else {
+    cartStore.addToFavorites({
+      id: product.id,
+      name: product.name,
+      price: parseFloat(product.price),
+      image: product.image,
+    });
+  }
+};
+
 onMounted(() => {
   fetchData();
 });
 </script>
 
 <style scoped>
-/* responsive adjustments if needed */
+/* No changes needed */
 </style>

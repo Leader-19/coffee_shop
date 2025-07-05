@@ -1,8 +1,6 @@
 <template>
   <div class="min-h-screen bg-white">
     <!-- Navigation -->
-
-
     <!-- Hero Section -->
     <section id="home" class="relative bg-gradient-to-br from-amber-50 to-orange-100 overflow-hidden">
       <div class="absolute inset-0 bg-black opacity-10"></div>
@@ -33,7 +31,7 @@
           <div class="relative">
             <div class="relative z-10 bg-white rounded-2xl shadow-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-300">
               <img 
-                src="" 
+                src="../../public/coffee.jpg" 
                 alt="Premium Coffee" 
                 class="w-full h-80 object-cover rounded-xl"
               />
@@ -68,7 +66,7 @@
           <!-- Feature 1 -->
           <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
             <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Coffee class="h-8 w-8 text-amber-600" />
+              <i class="fas fa-coffee h-8 w-8 text-amber-600"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-3">Premium Quality</h3>
             <p class="text-gray-600">
@@ -80,7 +78,7 @@
           <!-- Feature 2 -->
           <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
             <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart class="h-8 w-8 text-amber-600" />
+              <i class="fas fa-heart h-8 w-8 text-amber-600"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-3">Made with Love</h3>
             <p class="text-gray-600">
@@ -92,7 +90,7 @@
           <!-- Feature 3 -->
           <div class="text-center p-6 rounded-xl hover:shadow-lg transition-shadow">
             <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users class="h-8 w-8 text-amber-600" />
+              <i class="fas fa-users h-8 w-8 text-amber-600"></i>
             </div>
             <h3 class="text-xl font-semibold text-gray-900 mb-3">Community Focus</h3>
             <p class="text-gray-600">
@@ -147,12 +145,12 @@
             <div class="flex items-center justify-between mb-4">
               <span class="text-2xl font-bold text-amber-600">${{ product.price.toFixed(2) }}</span>
               <div class="flex items-center gap-1">
-                <Star 
+                <i 
                   v-for="star in 5" 
                   :key="star"
-                  :class="star <= product.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'"
+                  :class="star <= product.rating ? 'fas fa-star text-yellow-400 fill-current' : 'fas fa-star text-gray-300'"
                   class="h-4 w-4"
-                />
+                ></i>
                 <span class="text-sm text-gray-500 ml-1">({{ product.reviews }})</span>
               </div>
             </div>
@@ -197,69 +195,15 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <!-- Company Info -->
-          <div class="col-span-1 md:col-span-2">
-            <div class="flex items-center gap-3 mb-4">
-              <Coffee class="h-8 w-8 text-amber-600" />
-              <h3 class="text-xl font-bold">Brew & Bean Café</h3>
-            </div>
-            <p class="text-gray-400 mb-4">
-              Your neighborhood coffee shop serving premium coffee and creating memorable experiences 
-              since 2015.
-            </p>
-            <div class="flex space-x-4">
-              <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors cursor-pointer">
-                <span class="text-sm font-bold">f</span>
-              </div>
-              <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors cursor-pointer">
-                <span class="text-sm font-bold">t</span>
-              </div>
-              <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-amber-600 transition-colors cursor-pointer">
-                <span class="text-sm font-bold">i</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Links -->
-          <div>
-            <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul class="space-y-2 text-gray-400">
-              <li><a href="#" class="hover:text-white transition-colors">Menu</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-              <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
-            </ul>
-          </div>
-
-          <!-- Contact Info -->
-          <div>
-            <h4 class="text-lg font-semibold mb-4">Contact</h4>
-            <ul class="space-y-2 text-gray-400">
-              <li>123 Coffee Street</li>
-              <li>City, State 12345</li>
-              <li>(555) 123-4567</li>
-              <li>hello@brewbean.com</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Brew & Bean Café. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 // Reactive data
-const email = ref('')
+const email = ref('');
 
 // Popular products data
 const popularProducts = ref([
@@ -271,7 +215,7 @@ const popularProducts = ref([
     rating: 5,
     reviews: 124,
     badge: 'Best Seller',
-    image: '/placeholder.svg?height=200&width=300'
+    image: '../../public/p-1.jpg'
   },
   {
     id: 2,
@@ -281,7 +225,7 @@ const popularProducts = ref([
     rating: 5,
     reviews: 98,
     badge: 'Popular',
-    image: '/placeholder.svg?height=200&width=300'
+    image: '../../public/p2.jpg'
   },
   {
     id: 3,
@@ -291,7 +235,7 @@ const popularProducts = ref([
     rating: 4,
     reviews: 76,
     badge: 'Fresh',
-    image: '/placeholder.svg?height=200&width=300'
+    image: '../../public/p3.jpg'
   },
   {
     id: 4,
@@ -301,19 +245,19 @@ const popularProducts = ref([
     rating: 5,
     reviews: 156,
     badge: 'New',
-    image: '/placeholder.svg?height=200&width=300'
+    image: '../../public/p4.jpg'
   }
-])
+]);
 
 // Methods
 const subscribeNewsletter = () => {
   if (email.value) {
-    alert(`Thank you for subscribing with email: ${email.value}`)
-    email.value = ''
+    alert(`Thank you for subscribing with email: ${email.value}`);
+    email.value = '';
   } else {
-    alert('Please enter a valid email address')
+    alert('Please enter a valid email address');
   }
-}
+};
 </script>
 
 <style scoped>

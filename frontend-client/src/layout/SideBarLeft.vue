@@ -2,14 +2,11 @@
   <div
     class="fixed top-0 left-0 w-20 h-screen bg-white shadow-lg flex flex-col items-center py-8 border-r border-gray-100 z-50"
   >
-    <!-- Logo -->
     <div
       class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center mb-8 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
     >
       <i class="fas fa-coffee text-white text-lg group-hover:scale-110 transition-transform duration-300"></i>
     </div>
-
-    <!-- Main Navigation -->
     <nav class="flex flex-col space-y-4 mb-auto">
       <router-link
         v-for="item in navItems"
@@ -30,12 +27,10 @@
               : `w-4 h-4 bg-${item.badge.color}-500 text-white text-xs`
           ]"
         >
-         
+          <span v-if="item.badge.type === 'number'">{{ item.badge.value }}</span>
         </div>
       </router-link>
     </nav>
-
-    <!-- Bottom Navigation -->
     <div class="flex flex-col space-y-4 mt-8">
       <button
         v-for="item in bottomNavItems"
@@ -60,13 +55,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useCartStore } from '@/stores/cart';
+
+const cartStore = useCartStore();
 
 const navItems = ref([
   { name: 'Home', icon: 'fas fa-home', active: false, path: '/' },
-  { name: 'ProductPage', icon: 'fas fa-th-large', active: true, badge: { type: 'dot', color: 'orange' }, path: '/products' },
-  { name: 'Favorites', icon: 'fas fa-heart', active: false, badge: { type: 'number', value: 3, color: 'red' }, path: '/favorites' },
-  { name: 'Orders', icon: 'fas fa-shopping-bag', active: false, badge: { type: 'number', value: 5, color: 'blue' }, path: '/orders' },
+  { name: 'Products', icon: 'fas fa-th-large', active: true, badge: { type: 'dot', color: 'orange' }, path: '/products' },
+  {
+    name: 'Favorites',
+    icon: 'fas fa-heart',
+    active: false,
+    badge: {
+      type: 'number',
+      value: computed(() => cartStore.favorites.length),
+      color: 'red'
+    },
+    path: '/favorites'
+  },
+  {
+    name: 'Orders',
+    icon: 'fas fa-shopping-bag',
+    active: false,
+    badge: {
+      type: 'number',
+      value: computed(() => cartStore.cartItems.length),
+      color: 'blue'
+    },
+    path: '/orders'
+  },
   { name: 'Profile', icon: 'fas fa-user', active: false, path: '/profile' },
 ]);
 
@@ -75,3 +93,7 @@ const bottomNavItems = ref([
   { name: 'Logout', icon: 'fas fa-sign-out-alt' },
 ]);
 </script>
+
+<style scoped>
+/* No changes needed */
+</style>
