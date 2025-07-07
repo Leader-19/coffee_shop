@@ -8,6 +8,8 @@ import ProductPage from "@/views/ProductPage.vue";
 import ReportPage from "@/views/ReportPage.vue";
 import SettingPage from "@/views/SettingPage.vue";
 import UserManagement from "@/views/UserManagement.vue";
+import LoginPage from "@/auth/LoginPage.vue";
+import RegisterPage from "@/auth/RegisterPage.vue";
 
 const routes = [
   { path: "/", component: DashboardPage, name: "DashboardPage" },
@@ -22,6 +24,8 @@ const routes = [
   { path: "/reports", component: ReportPage, name: "ReportPage" },
   { path: "/payments", component: PaymentPage, name: "PaymentPage" },
   { path: "/settings", component: SettingPage, name: "SettingPage" },
+  { path : '/login', component : LoginPage, name : 'LoginPage'},
+  { path : '/register', component : RegisterPage, name: 'RegisterPage'}
 ];
 
 const router = createRouter({
