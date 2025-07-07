@@ -1,38 +1,57 @@
 import { defineStore } from 'pinia'
 import api from '../api/axios'
+import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || '',
-    user: null,
+    token: localStorage.getItem('token') || null,
+    user: JSON.parse(localStorage.getItem('user')) || null,
   }),
   actions: {
+    async register(userData) {
+      try {
+        const response = await api.post('/register', userData)
+        this.token = response.data.token
+        this.user = response.data.user
+        localStorage.setItem('token', this.token)
+        localStorage.setItem('user', JSON.stringify(this.user))
+        return response
+      } catch (error) {
+        throw error
+      }
+    },
     async login(credentials) {
-      const response = await api.post('/login', credentials)
-      this.token = response.data.token
-      localStorage.setItem('token', this.token)
-      api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+      try {
+        const response = await api.post('/login', credentials)
+        this.token = response.data.token
+        this.user = response.data.user
+        localStorage.setItem('token', this.token)
+        localStorage.setItem('user', JSON.stringify(this.user))
+        return response
+      } catch (error) {
+        throw error
+      }
     },
-
-    async getUser() {
-      const res = await api.get('/user', {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        }
-      })
-      this.user = res.data
-    },
-
     async logout() {
-      await api.post('/logout', {}, {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        }
-      })
-      this.token = ''
-      this.user = null
-      localStorage.removeItem('token')
-      delete api.defaults.headers.common['Authorization']
+      try {
+        await api.post('/logout')
+        this.token = null
+        this.user = null
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+      } catch (error) {
+        throw error
+      }
+    },
+    async fetchUser() {
+      try {
+        const response = await api.get('/user')
+        this.user = response.data
+        localStorage.setItem('user', JSON.stringify(this.user))
+        return response
+      } catch (error) {
+        throw error
+      }
     }
   }
 })

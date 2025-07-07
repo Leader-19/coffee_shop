@@ -5,16 +5,25 @@ import { useAuthStore } from '@/stores/auth'
 
 const email = ref('')
 const password = ref('')
+const error = ref('')
 const auth = useAuthStore()
 const router = useRouter()
 
 const submit = async () => {
   try {
-    await auth.login({ email: email.value, password: password.value })
-    await auth.getUser()
-    router.push('/')
-  } catch (error) {
-    alert('Login failed')
+    error.value = ''
+    const success = await auth.login({
+      email: email.value,
+      password: password.value
+    })
+    
+    if (success) {
+      await auth.fetchUser()
+      router.push('/')
+    }
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Login failed. Please try again.'
+    console.error('Login error:', err)
   }
 }
 </script>
