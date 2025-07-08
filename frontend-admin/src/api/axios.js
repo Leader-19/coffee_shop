@@ -1,7 +1,5 @@
 import axios from 'axios'
-// import { useAuthStore } from '@/stores/auth'
 import { useAuthStore } from '@/stores/auth'
-// import router from '@/router'
 import router from '@/routes'
 
 const api = axios.create({
@@ -38,12 +36,16 @@ api.interceptors.response.use(
       
       try {
         // Attempt to refresh token if you have refresh token logic
-        // Or simply logout the user
+        if (authStore.refreshToken) {
+          await authStore.refreshToken()
+          return api(originalRequest)
+        }
+        // If no refresh token logic, logout
         await authStore.logout()
         router.push('/login')
         return Promise.reject(error)
       } catch (refreshError) {
-        authStore.clearAuthData()
+        await authStore.logout()
         router.push('/login')
         return Promise.reject(refreshError)
       }

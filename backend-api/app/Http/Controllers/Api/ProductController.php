@@ -47,7 +47,6 @@ class ProductController extends Controller
                 'message' => 'Product created successfully',
                 'product' => $product
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Product creation failed',
@@ -85,10 +84,6 @@ class ProductController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                // Delete old image if exists
-                if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
-                }
                 $path = $request->file('image')->store('products', 'public');
                 $validated['image'] = $path;
             }
@@ -99,7 +94,6 @@ class ProductController extends Controller
                 'message' => 'Product updated successfully',
                 'product' => $product
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Product update failed',
@@ -112,18 +106,17 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
-            
+
             // Delete associated image
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            
+
             $product->delete();
 
             return response()->json([
                 'message' => 'Product deleted successfully'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Product deletion failed',
