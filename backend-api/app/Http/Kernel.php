@@ -23,6 +23,12 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
+    // app/Http/Kernel.php
+    protected $routeMiddleware = [
+        'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+        'admin.secret' => \App\Http\Middleware\VerifyAdminSecret::class,
+    ];
+
     /**
      * The application's route middleware groups.
      *

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col text-black ">
+  <div class="h-full flex flex-col text-black">
     <!-- Logo Section -->
     <div class="flex items-center justify-center mb-8 p-4">
       <div class="flex items-center">
@@ -89,12 +89,12 @@
               />
             </svg>
             <span class="font-medium">Products</span>
-            <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-indigo-600">24</span>
+            <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-indigo-600">{{ productCount }}</span>
           </router-link>
         </li>
 
-        <!-- Users -->
-        <li>
+        <!-- Users (only show for admin) -->
+        <li v-if="user?.role === 'admin'">
           <router-link
             to="/users"
             :class="getNavLinkClass"
@@ -120,9 +120,11 @@
               />
             </svg>
             <span class="font-medium">Users</span>
-            <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-indigo-600">2</span>
+            <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-indigo-600">{{ userCount }}</span>
           </router-link>
         </li>
+
+        
 
         <!-- Reports -->
         <li>
@@ -170,7 +172,7 @@
               />
             </svg>
             <span class="font-medium">Payments</span>
-            <span class="ml-auto bg-green-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-green-600">$2.4k</span>
+            <span class="ml-auto bg-green-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-green-600">${{ paymentTotal }}</span>
           </router-link>
         </li>
 
@@ -192,7 +194,6 @@
               <path d="M17 5c0 1.657-3.134 3-7 3S3 6.657 3 5s3.134-3 7-3 7 1.343 7 3z" />
             </svg>
             <span class="font-medium">Settings</span>
-            <span class="ml-auto bg-indigo-500 text-white text-xs px-2 py-1 rounded-full transition-all duration-300 group-hover:bg-indigo-600">3 OR</span>
           </router-link>
         </li>
       </ul>
@@ -203,6 +204,7 @@
       <button
         @click="handleLogout"
         class="hover:text-white-500 w-full flex items-center px-4 py-2 text-left rounded-lg transition-all duration-300 text-gray-400 hover:bg-red-600 hover:text-white"
+        :disabled="isLoggingOut"
       >
         <svg
           class="w-5 h-5 mr-3 text-gray-400 hover:text-white transition-colors duration-300"
@@ -215,17 +217,31 @@
             clip-rule="evenodd"
           />
         </svg>
-        <span class="font-medium">Logout</span>
+        <span class="font-medium">
+          {{ isLoggingOut ? 'Logging out...' : 'Logout' }}
+        </span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore)
+
+const isLoggingOut = ref(false)
+
+// Example data - replace with real data from your API
+const productCount = ref(24)
+const userCount = ref(2)
+const paymentTotal = ref('2.4k')
 
 const getNavLinkClass = computed(() => {
   return ({ isActive }) => {
@@ -236,7 +252,15 @@ const getNavLinkClass = computed(() => {
   }
 })
 
-const handleLogout = () => {
-  console.log('Logging out...')
+const handleLogout = async () => {
+  try {
+    isLoggingOut.value = true
+    await authStore.logout()
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout failed:', error)
+  } finally {
+    isLoggingOut.value = false
+  }
 }
 </script>

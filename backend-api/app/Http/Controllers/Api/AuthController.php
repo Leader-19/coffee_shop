@@ -100,4 +100,37 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function registerAdmin(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|confirmed|min:8',
+            ]);
+
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'admin',
+            ]);
+
+            return response()->json([
+                'message' => 'Admin created successfully',
+                'user' => $user,
+                'token' => $user->createToken('auth_token')->plainTextToken
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Admin creation failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

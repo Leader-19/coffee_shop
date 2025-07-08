@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
+  <div v-if="isAdminAuthenticated" class="flex min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-md p-6 fixed h-full">
       <NavbarPage />
@@ -18,11 +18,22 @@
       </div>
 
       <RouterView />
-
     </main>
+  </div>
+  <div v-else>
+    <RouterView />
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 import NavbarPage from './layout/NavbarPage.vue';
+
+const authStore = useAuthStore();
+
+// Check if the user is authenticated and has the admin role
+const isAdminAuthenticated = computed(() => {
+  return authStore.token && authStore.user && authStore.user.role === 'admin';
+});
 </script>

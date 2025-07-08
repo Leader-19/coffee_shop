@@ -65,7 +65,7 @@ const submit = async () => {
 
     <p class="mt-4 text-center">
       Don't have an account?
-      <router-link to="/register" class="text-blue-600 hover:underline">
+      <router-link to="/admin/register" class="text-blue-600 hover:underline">
         Register here
       </router-link>
     </p>

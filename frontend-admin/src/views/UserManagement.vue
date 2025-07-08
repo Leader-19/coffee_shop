@@ -206,9 +206,8 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue';
 import {
   UsersIcon,
   CheckCircleIcon,
@@ -218,131 +217,156 @@ import {
   PlusIcon,
   EyeIcon,
   PencilIcon,
-  TrashIcon
-} from 'lucide-vue-next'
-import axios from 'axios'
+  TrashIcon,
+} from 'lucide-vue-next';
+import api from '@/api/axios'; // Use the configured api instance
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 // Users array
-const users = ref([])
+const users = ref([]);
+const authStore = useAuthStore();
+const router = useRouter();
 
 // Filters and modals
-const searchQuery = ref('')
-const statusFilter = ref('')
-const roleFilter = ref('')
-const showAddModal = ref(false)
-const showEditModal = ref(false)
-const editingUser = ref(null)
+const searchQuery = ref('');
+const statusFilter = ref('');
+const roleFilter = ref('');
+const showAddModal = ref(false);
+const showEditModal = ref(false);
+const editingUser = ref(null);
 const userForm = ref({
   name: '',
   email: '',
   role: 'user',
-  status: 'active'
-})
+  status: 'active',
+});
 
 // Loading and error
-const isLoading = ref(false)
-const error = ref(null)
+const isLoading = ref(false);
+const error = ref(null);
 
 onMounted(() => {
-  fetchUsers()
-})
+  if (!authStore.token || !authStore.user || authStore.user.role !== 'admin') {
+    router.push('/login'); // Redirect if not authenticated or not admin
+  } else {
+    fetchUsers();
+  }
+});
 
 const fetchUsers = async () => {
-  isLoading.value = true
-  error.value = null
+  isLoading.value = true;
+  error.value = null;
   try {
-    const response = await axios.get('http://127.0.0.1:8000/api/users')
-    users.value = response.data.data
-    console.log(users)
+    const response = await api.get('/users'); // Use api instead of axios
+    users.value = response.data.data || response.data; // Adjust based on UserController response
+    console.log('Users fetched:', users.value);
   } catch (err) {
-    console.error(err)
-    error.value = 'Failed to fetch users'
+    console.error('Fetch users error:', err);
+    error.value = 'Failed to fetch users: ' + (err.response?.data?.message || err.message);
+    if (err.response?.status === 401 || err.response?.status === 403) {
+      authStore.clearAuthData();
+      router.push('/login');
+    }
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 const filteredUsers = computed(() => {
-  return users.value.filter(user => {
+  return users.value.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesStatus = !statusFilter.value || user.status === statusFilter.value
-    const matchesRole = !roleFilter.value || user.role === roleFilter.value
-    return matchesSearch && matchesStatus && matchesRole
-  })
-})
+      user.email.toLowerCase().includes(searchQuery.value.toLowerCase());
+    const matchesStatus = !statusFilter.value || user.status === statusFilter.value;
+    const matchesRole = !roleFilter.value || user.role === roleFilter.value;
+    return matchesSearch && matchesStatus && matchesRole;
+  });
+});
 
-const activeUsers = computed(() => users.value.filter(u => u.status === 'active').length)
-const inactiveUsers = computed(() => users.value.filter(u => u.status === 'inactive').length)
-const pendingUsers = computed(() => users.value.filter(u => u.status === 'pending').length)
+const activeUsers = computed(() => users.value.filter((u) => u.status === 'active').length);
+const inactiveUsers = computed(() => users.value.filter((u) => u.status === 'inactive').length);
+const pendingUsers = computed(() => users.value.filter((u) => u.status === 'pending').length);
 
-const getRoleClass = role => {
+const getRoleClass = (role) => {
   return {
     admin: 'bg-purple-100 text-purple-800',
     user: 'bg-blue-100 text-blue-800',
-    moderator: 'bg-green-100 text-green-800'
-  }[role] || 'bg-gray-100 text-gray-800'
-}
+    moderator: 'bg-green-100 text-green-800',
+  }[role] || 'bg-gray-100 text-gray-800';
+};
 
-const getStatusClass = status => {
+const getStatusClass = (status) => {
   return {
     active: 'bg-green-100 text-green-800',
     inactive: 'bg-red-100 text-red-800',
-    pending: 'bg-yellow-100 text-yellow-800'
-  }[status] || 'bg-gray-100 text-gray-800'
-}
+    pending: 'bg-yellow-100 text-yellow-800',
+  }[status] || 'bg-gray-100 text-gray-800';
+};
 
-const formatDate = date => {
-  if (!date) return '-'
+const formatDate = (date) => {
+  if (!date) return '-';
   return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric', month: 'short', day: 'numeric'
-  }).format(new Date(date))
-}
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(date));
+};
 
 const openAddModal = () => {
-  showAddModal.value = true
-  showEditModal.value = false
-  userForm.value = { name: '', email: '', role: 'user', status: 'active' }
-}
+  showAddModal.value = true;
+  showEditModal.value = false;
+  userForm.value = { name: '', email: '', role: 'user', status: 'active' };
+};
 
-const openEditModal = user => {
-  editingUser.value = user
-  userForm.value = { ...user }
-  showEditModal.value = true
-  showAddModal.value = false
-}
+const openEditModal = (user) => {
+  editingUser.value = user;
+  userForm.value = { ...user };
+  showEditModal.value = true;
+  showAddModal.value = false;
+};
 
 const closeModal = () => {
-  showAddModal.value = false
-  showEditModal.value = false
-  editingUser.value = null
-  userForm.value = { name: '', email: '', role: 'user', status: 'active' }
-}
+  showAddModal.value = false;
+  showEditModal.value = false;
+  editingUser.value = null;
+  userForm.value = { name: '', email: '', role: 'user', status: 'active' };
+};
 
-const addUser = () => {
-  users.value.push({
-    id: Date.now(), // temporary unique id
-    ...userForm.value,
-    lastActive: new Date()
-  })
-  closeModal()
-}
+const addUser = async () => {
+  try {
+    const response = await api.post('/users', userForm.value);
+    users.value.push(response.data.data || response.data);
+    closeModal();
+  } catch (err) {
+    error.value = 'Failed to add user: ' + (err.response?.data?.message || err.message);
+  }
+};
 
-const updateUser = () => {
+const updateUser = async () => {
   if (editingUser.value) {
-    Object.assign(editingUser.value, userForm.value)
+    try {
+      const response = await api.put(`/users/${editingUser.value.id}`, userForm.value);
+      Object.assign(editingUser.value, response.data.data || response.data);
+      closeModal();
+    } catch (err) {
+      error.value = 'Failed to update user: ' + (err.response?.data?.message || err.message);
+    }
   }
-  closeModal()
-}
+};
 
-const deleteUser = id => {
+const deleteUser = async (id) => {
   if (confirm('Are you sure you want to delete this user?')) {
-    users.value = users.value.filter(u => u.id !== id)
+    try {
+      await api.delete(`/users/${id}`);
+      users.value = users.value.filter((u) => u.id !== id);
+    } catch (err) {
+      error.value = 'Failed to delete user: ' + (err.response?.data?.message || err.message);
+    }
   }
-}
+};
 
-const viewUser = user => {
-  alert(`Name: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.status}`)
-}
+const viewUser = (user) => {
+  alert(`Name: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.status}`);
+};
 </script>

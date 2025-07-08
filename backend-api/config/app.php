@@ -15,6 +15,12 @@ return [
     |
     */
 
+    // secret number
+
+    'admin_register_secret' => env('ADMIN_REGISTER_SECRET', '123'),
+
+    //end secret number
+
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
