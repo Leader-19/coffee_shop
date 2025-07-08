@@ -72,8 +72,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import api from '@/api/axios'
+
+const router = useRouter()
+const authStore = useAuthStore()
 
 // Reactive form fields
 const name = ref('')
@@ -89,6 +94,13 @@ const priceError = ref('')
 // Feedback messages
 const message = ref('')
 const error = ref('')
+
+// Check authentication on mount
+onMounted(() => {
+  if (!authStore.token) {
+    router.push('/login')
+  }
+})
 
 // Image handler
 const handleImage = (e) => {
@@ -111,12 +123,12 @@ const submitForm = async () => {
   if (!description.value.trim()) {
     descriptionError.value = 'Description is required'
   }
-  if (!price.value) {
-    priceError.value = 'Price is required'
+  if (!price.value || isNaN(price.value)) {
+    priceError.value = 'Valid price is required'
   }
 
   if (nameError.value || descriptionError.value || priceError.value) {
-    return // stop submission if validation fails
+    return
   }
 
   // Prepare form data
@@ -129,7 +141,7 @@ const submitForm = async () => {
   }
 
   try {
-    const res = await axios.post('http://127.0.0.1:8000/api/products', formData, {
+    const res = await api.post('/products', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -144,9 +156,16 @@ const submitForm = async () => {
     image.value = null
     document.getElementById('image').value = ''
   } catch (err) {
-    console.error(err)
+    console.error('Error creating product:', err)
     if (err.response?.status === 422) {
+      const errors = err.response.data.errors
+      nameError.value = errors.name ? errors.name[0] : ''
+      descriptionError.value = errors.description ? errors.description[0] : ''
+      priceError.value = errors.price ? errors.price[0] : ''
       error.value = '⚠️ Validation failed. Please check your input.'
+    } else if (err.response?.status === 401) {
+      error.value = '⚠️ You are not authenticated. Please log in.'
+      router.push('/login')
     } else {
       error.value = '❌ Failed to create product. Please try again.'
     }

@@ -4,6 +4,8 @@ import ProductPage from '@/views/ProductPage.vue';
 import FavoritePage from '@/views/FavoritePage.vue';
 import OrderPage from '@/views/OrderPage.vue';
 import ProfilePage from '@/views/ProfilePage.vue';
+import LoginPage from '@/auth/LoginPage.vue';
+import RegisterPage from '@/auth/RegisterPage.vue';
 
 const routes = [
   {
@@ -30,6 +32,17 @@ const routes = [
     path : '/profile',
     component : ProfilePage,
     name : 'ProfilePage'
+  },
+  {
+    path : '/login',
+    component : LoginPage,
+    name : 'LoginPage'
+  },
+
+  {
+    path : '/register',
+    component : RegisterPage,
+    name : 'RegisterPage'
   }
 ];
 const router = createRouter({
