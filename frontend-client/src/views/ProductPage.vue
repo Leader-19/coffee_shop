@@ -78,7 +78,7 @@
           </div>
           <button
             @click="addToOrder(product)"
-            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition-colors disabled:opacity-50 disabled.Cursor-not-allowed"
             :disabled="loading || !isValidPrice(product.price)"
           >
             Add to Order
@@ -92,17 +92,31 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useCartStore } from '@/stores/cart';
-import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+import api from '@/api/axios';
 
 const cartStore = useCartStore();
+const authStore = useAuthStore();
+const router = useRouter();
 const products = ref({ data: [] });
 const loading = ref(true);
 const quantities = ref({});
 
+const getCsrfToken = async () => {
+  try {
+    // Use the correct Sanctum CSRF endpoint
+    // await api.get('/sanctum/csrf-cookie');
+    console.log('CSRF token fetched successfully');
+  } catch (e) {
+    console.error('Error fetching CSRF token:', e.response?.data || e);
+  }
+};
+
 const fetchData = async () => {
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
-    const response = await axios.get(`${apiUrl}/products`);
+    console.log('Fetching products with token:', authStore.token);
+    const response = await api.get('/products');
     products.value = {
       data: response.data.data.map(product => ({
         ...product,
@@ -115,8 +129,12 @@ const fetchData = async () => {
       quantities.value[p.id] = 1;
     });
   } catch (e) {
-    console.error('Error fetching products:', e);
+    console.error('Error fetching products:', e.response?.data || e);
     products.value.data = [];
+    if (e.response?.status === 401) {
+      authStore.clearAuthData();
+      router.push('/login');
+    }
   } finally {
     loading.value = false;
   }
@@ -174,8 +192,13 @@ const toggleFavorite = (product) => {
   }
 };
 
-onMounted(() => {
-  fetchData();
+onMounted(async () => {
+  await getCsrfToken();
+  if (!authStore.token) {
+    router.push('/login');
+  } else {
+    await fetchData();
+  }
 });
 </script>
 

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import api from '../api/axios';
+import api from '@/api/axios';
 import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', {
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('user', JSON.stringify(this.user));
         return response;
       } catch (error) {
-        throw error;
+        throw error.response?.data || error;
       }
     },
     async login(credentials) {
@@ -29,20 +29,20 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('user', JSON.stringify(this.user));
         return response;
       } catch (error) {
-        throw error;
+        throw error.response?.data || error;
       }
     },
     async logout() {
       try {
-        await api.post('/logout'); // Call the logout API
-        this.token = null;
-        this.user = null;
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        await api.post('/logout');
+        this.clearAuthData();
         const router = useRouter();
-        router.push('/login'); // Redirect to login page
+        router.push('/login');
       } catch (error) {
-        throw error;
+        this.clearAuthData();
+        const router = useRouter();
+        router.push('/login');
+        throw error.response?.data || error;
       }
     },
     async fetchUser() {
@@ -52,7 +52,8 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('user', JSON.stringify(this.user));
         return response;
       } catch (error) {
-        throw error;
+        this.clearAuthData();
+        throw error.response?.data || error;
       }
     },
     clearAuthData() {
