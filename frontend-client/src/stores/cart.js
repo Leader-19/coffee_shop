@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export const useCartStore = defineStore('cart', () => {
-  const cartItems = ref([]);
-  const favorites = ref([]);
+  // Load from localStorage or fallback to empty array
+  const cartItems = ref(JSON.parse(localStorage.getItem('cartItems') || '[]'));
+  const favorites = ref(JSON.parse(localStorage.getItem('favorites') || '[]'));
 
   const isValidPrice = (price) => {
     return typeof price === 'number' && !isNaN(price) && price >= 0;
@@ -23,6 +24,10 @@ export const useCartStore = defineStore('cart', () => {
         image: product.image,
       });
     }
+  };
+
+  const removeFromCart = (productId) => {
+    cartItems.value = cartItems.value.filter(item => item.id !== productId);
   };
 
   const addToFavorites = (product) => {
@@ -51,5 +56,24 @@ export const useCartStore = defineStore('cart', () => {
   const tax = () => (parseFloat(subtotal()) * taxRate).toFixed(2);
   const total = () => (parseFloat(subtotal()) + parseFloat(tax())).toFixed(2);
 
-  return { cartItems, favorites, addToCart, addToFavorites, removeFromFavorites, subtotal, tax, total };
+  // 🔄 Sync cartItems and favorites to localStorage
+  watch(cartItems, (newCart) => {
+    localStorage.setItem('cartItems', JSON.stringify(newCart));
+  }, { deep: true });
+
+  watch(favorites, (newFavorites) => {
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  }, { deep: true });
+
+  return {
+    cartItems,
+    favorites,
+    addToCart,
+    removeFromCart, // ✅ Added here
+    addToFavorites,
+    removeFromFavorites,
+    subtotal,
+    tax,
+    total
+  };
 });
