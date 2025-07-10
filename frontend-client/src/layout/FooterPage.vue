@@ -7,7 +7,7 @@
           <div class="col-span-1 md:col-span-2">
             <div class="flex items-center gap-3 mb-4">
               <i class="fas fa-coffee h-8 w-8 text-amber-600"></i>
-              <h3 class="text-xl font-bold">Brew & Bean Café</h3>
+              <h3 class="text-xl font-bold">Fresh & Enjoy Café</h3>
             </div>
             <p class="text-gray-400 mb-4">
               Your neighborhood coffee shop serving premium coffee and creating memorable experiences 
@@ -41,16 +41,16 @@
           <div>
             <h4 class="text-lg font-semibold mb-4">Contact</h4>
             <ul class="space-y-2 text-gray-400">
-              <li>123 Coffee Street</li>
-              <li>City, State 12345</li>
-              <li>(555) 123-4567</li>
-              <li>hello@brewbean.com</li>
+              <li>2004, Sorlar, Coffee Street</li>
+              <li>Phnom Penh</li>
+              <li>(+885) 695 075 726</li>
+              <li>leaderdin@gmail.com</li>
             </ul>
           </div>
         </div>
 
         <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>© 2024 Brew & Bean Café. All rights reserved.</p>
+          <p>© 2024 Fresh & Enjoy Café. All rights reserved.</p>
         </div>
       </div>
     </footer>

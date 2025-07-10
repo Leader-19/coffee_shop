@@ -10,7 +10,7 @@
           <div class="text-center lg:text-left">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
               Welcome to
-              <span class="text-amber-600">Brew & Bean</span>
+              <span class="text-amber-600">Fresh & Enjoy</span>
               Café
             </h1>
             <p class="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed">
